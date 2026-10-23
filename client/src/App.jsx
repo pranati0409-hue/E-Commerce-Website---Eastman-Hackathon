@@ -114,6 +114,8 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [notice, setNotice] = useState("");
+  const [checkout, setCheckout] = useState(false);
+  const [orderPlaced, setOrderPlaced] = useState(false);
 
   const visibleProducts = useMemo(() => {
     return products.filter((product) => {
@@ -133,6 +135,7 @@ export default function App() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+  const shipping = cartTotal >= 1999 || cart.length === 0 ? 0 : 99;
 
   function addToCart(product) {
     setCart((current) => {
@@ -173,14 +176,22 @@ export default function App() {
       </div>
 
       <header className="navbar">
-        <a className="brand" href="#" aria-label="Oddly home">
+        <a
+          className="brand"
+          href="#"
+          aria-label="Oddly home"
+          onClick={() => {
+            setCheckout(false);
+            setOrderPlaced(false);
+          }}
+        >
           oddly<span className="brand-dot">.</span>
         </a>
 
         <nav className="nav-links">
-          <a href="#discover">Discover</a>
-          <a href="#categories">Categories</a>
-          <a href="#about">Our point of view</a>
+          <a href="#discover" onClick={() => setCheckout(false)}>Discover</a>
+          <a href="#categories" onClick={() => setCheckout(false)}>Categories</a>
+          <a href="#about" onClick={() => setCheckout(false)}>Our point of view</a>
         </nav>
 
         <div className="nav-actions">
@@ -216,6 +227,171 @@ export default function App() {
       </header>
 
       <main>
+        {checkout ? (
+          orderPlaced ? (
+            <section className="checkout-confirmation">
+              <span className="confirmation-mark">✳</span>
+              <span className="eyebrow">THAT'S A WRAP / DEMO ORDER</span>
+              <h1>Your good things<br />are almost yours.</h1>
+              <p>
+                Your demo order has been placed. No payment was collected and
+                no order was sent to a server.
+              </p>
+              <button
+                className="primary-button"
+                onClick={() => {
+                  setCheckout(false);
+                  setOrderPlaced(false);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              >
+                BACK TO THE GOOD STUFF <span>↗</span>
+              </button>
+            </section>
+          ) : (
+            <section className="checkout-page">
+              <div className="checkout-heading">
+                <button
+                  className="checkout-back"
+                  onClick={() => setCheckout(false)}
+                >
+                  ← BACK TO YOUR BAG
+                </button>
+                <span className="eyebrow">ALMOST YOURS / CHECKOUT</span>
+                <h1>Make it <span>official.</span></h1>
+                <p>A few details, then these good things are yours.</p>
+              </div>
+
+              <div className="checkout-layout">
+                <form
+                  className="checkout-form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    setCart([]);
+                    setOrderPlaced(true);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                >
+                  <section className="checkout-card">
+                    <div className="checkout-card-heading">
+                      <span>01</span>
+                      <div>
+                        <h2>Contact details</h2>
+                        <p>Where should we send your order updates?</p>
+                      </div>
+                    </div>
+                    <label className="checkout-field">
+                      Email address
+                      <input name="email" type="email" autoComplete="email" placeholder="you@example.com" required />
+                    </label>
+                    <label className="checkout-field">
+                      Phone number
+                      <input name="phone" type="tel" autoComplete="tel" inputMode="tel" pattern="[0-9]{10,15}" placeholder="10-digit mobile number" required />
+                    </label>
+                  </section>
+
+                  <section className="checkout-card">
+                    <div className="checkout-card-heading">
+                      <span>02</span>
+                      <div>
+                        <h2>Delivery address</h2>
+                        <p>We’ll bring your finds right to your door.</p>
+                      </div>
+                    </div>
+                    <label className="checkout-field">
+                      Full name
+                      <input name="name" autoComplete="name" placeholder="Your name" required />
+                    </label>
+                    <label className="checkout-field">
+                      Street address
+                      <input name="address" autoComplete="street-address" placeholder="House / flat, street, area" required />
+                    </label>
+                    <div className="checkout-fields-row">
+                      <label className="checkout-field">
+                        City
+                        <input name="city" autoComplete="address-level2" placeholder="City" required />
+                      </label>
+                      <label className="checkout-field">
+                        State
+                        <input name="state" autoComplete="address-level1" placeholder="State" required />
+                      </label>
+                    </div>
+                    <label className="checkout-field">
+                      PIN code
+                      <input name="postalCode" autoComplete="postal-code" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} placeholder="6-digit PIN code" required />
+                    </label>
+                  </section>
+
+                  <section className="checkout-card">
+                    <div className="checkout-card-heading">
+                      <span>03</span>
+                      <div>
+                        <h2>Payment</h2>
+                        <p>Payment integrations aren’t connected in this demo.</p>
+                      </div>
+                    </div>
+                    <label className="payment-option">
+                      <input type="radio" name="payment" value="demo" defaultChecked />
+                      <span>
+                        <strong>Demo order</strong>
+                        <small>No payment will be collected.</small>
+                      </span>
+                      <span className="payment-check" aria-hidden="true">✓</span>
+                    </label>
+                  </section>
+
+                  <button className="primary-button checkout-place-order" type="submit">
+                    PLACE DEMO ORDER <span>↗</span>
+                  </button>
+                  <p className="checkout-disclaimer">
+                    This is a demo checkout. Submitting does not charge you or
+                    send your details to a server.
+                  </p>
+                </form>
+
+                <aside className="checkout-summary">
+                  <div className="checkout-summary-heading">
+                    <span className="eyebrow">THE GOOD STUFF</span>
+                    <h2>Your order <span>({cartCount})</span></h2>
+                  </div>
+                  <div className="checkout-summary-items">
+                    {cart.map((item) => (
+                      <div className="checkout-summary-item" key={item.id}>
+                        <div className="checkout-summary-image">
+                          <img src={item.image} alt={item.name} />
+                          <span>{item.quantity}</span>
+                        </div>
+                        <div>
+                          <strong>{item.name}</strong>
+                          <small>{item.category}</small>
+                        </div>
+                        <strong>{money(item.price * item.quantity)}</strong>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="checkout-totals">
+                    <div><span>Subtotal</span><strong>{money(cartTotal)}</strong></div>
+                    <div>
+                      <span>Shipping</span>
+                      <strong>{shipping === 0 ? "FREE" : money(shipping)}</strong>
+                    </div>
+                    <div className="checkout-grand-total">
+                      <span>Total</span>
+                      <strong>{money(cartTotal + shipping)}</strong>
+                    </div>
+                  </div>
+                  {cartTotal < 1999 && cartTotal > 0 && (
+                    <p className="checkout-shipping-note">
+                      Add {money(1999 - cartTotal)} more for free shipping.
+                    </p>
+                  )}
+                  <div className="checkout-secure-note">✳ &nbsp; GOOD TASTE, NO SURPRISES</div>
+                </aside>
+              </div>
+            </section>
+          )
+        ) : (
+          <>
         <section className="hero">
           <div className="hero-copy">
             <div className="eyebrow">
@@ -483,6 +659,8 @@ export default function App() {
           </div>
           <span className="manifesto-decoration">✳</span>
         </section>
+          </>
+        )}
       </main>
 
       <footer className="footer">
@@ -583,8 +761,10 @@ export default function App() {
             <button
               className="primary-button checkout-button"
               onClick={() => {
-                setNotice("Connect your checkout page to continue");
+                setCheckout(true);
+                setOrderPlaced(false);
                 document.getElementById("mini-cart")?.close();
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
             >
               CONTINUE TO CHECKOUT ↗
