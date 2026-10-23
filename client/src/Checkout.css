@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Poppins:wght@400;500;600;700&display=swap');
+
+.oddly-checkout {
+  --co-paper: #f2f6fe;
+  --co-ink: #14214f;
+  --co-muted: #4d5a7a;
+  --co-line: #c7d3f0;
+  --co-blue: #2b3e8b;
+  --co-accent: #2b4fd8;
+  --co-yellow: #ffd84d;
+  min-height: 100vh;
+  padding: 0 clamp(18px, 5vw, 76px) 32px;
+  background: var(--co-paper);
+  color: var(--co-ink);
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+}
+.oddly-checkout *, .oddly-checkout *::before, .oddly-checkout *::after { box-sizing: border-box; }
+.checkout-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  min-height: 88px; border-bottom: 1px solid var(--co-line);
+}
+.checkout-logo {
+  padding: 0; border: 0; background: transparent; color: #000;
+  font: italic 600 40px/1 'DM Serif Display', Georgia, serif; letter-spacing: -.05em;
+}
+.checkout-logo span, .checkout-dot { color: var(--co-accent); }
+.checkout-progress { display: flex; align-items: center; gap: 14px; color: var(--co-muted); font-size: 10px; letter-spacing: .08em; }
+.checkout-progress i { width: 32px; height: 1px; background: var(--co-line); }
+.checkout-progress-active { color: var(--co-ink); font-weight: 700; }
+.checkout-secure { font-size: 10px; letter-spacing: .08em; color: var(--co-muted); }
+.checkout-page-heading { max-width: 1200px; margin: 56px auto 36px; }
+.checkout-kicker { margin: 0 0 9px; color: var(--co-muted); font-size: 11px; font-weight: 600; letter-spacing: .12em; }
+.checkout-page-heading h1, .checkout-success h1 {
+  margin: 0; font: 400 clamp(42px, 5.5vw, 72px)/1.05 'DM Serif Display', Georgia, serif; letter-spacing: -.035em;
+}
+.checkout-page-heading h1 em, .checkout-success h1 em { color: var(--co-accent); font-weight: 400; }
+.checkout-muted { color: var(--co-muted); line-height: 1.75; font-size: 14px; }
+.checkout-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .8fr); gap: clamp(24px, 4vw, 56px); max-width: 1200px; margin: 0 auto; align-items: start; }
+.checkout-form { min-width: 0; }
+.checkout-panel, .checkout-summary {
+  padding: clamp(20px, 3vw, 32px); border: 1px solid var(--co-line); background: rgba(255,255,255,.42);
+}
+.checkout-panel { margin-bottom: 18px; }
+.checkout-section-heading { display: flex; gap: 16px; padding-bottom: 22px; margin-bottom: 22px; border-bottom: 1px solid var(--co-line); }
+.checkout-section-heading > span { color: var(--co-accent); font-size: 12px; font-weight: 700; padding-top: 5px; }
+.checkout-section-heading h2, .checkout-summary-top h2 { margin: 0; font: 400 27px/1.15 'DM Serif Display', Georgia, serif; }
+.checkout-section-heading p { margin: 6px 0 0; color: var(--co-muted); font-size: 12px; }
+.checkout-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; }
+.checkout-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.checkout-field-full { grid-column: 1 / -1; }
+.checkout-field > span, .checkout-coupon > label { color: var(--co-muted); font-size: 10px; font-weight: 700; letter-spacing: .08em; }
+.checkout-field input, .checkout-coupon-row input {
+  width: 100%; min-width: 0; min-height: 46px; padding: 12px 13px;
+  border: 1px solid var(--co-line); border-radius: 2px; outline: none; background: #fff; color: var(--co-ink);
+  font: 13px 'Poppins', sans-serif;
+}
+.checkout-field input:focus, .checkout-coupon-row input:focus { border-color: var(--co-accent); box-shadow: 0 0 0 2px rgba(43,79,216,.08); }
+.checkout-payment-option {
+  display: flex; gap: 12px; align-items: flex-start; padding: 16px; margin-top: 10px;
+  border: 1px solid var(--co-line); cursor: pointer;
+}
+.checkout-payment-option.selected { border-color: var(--co-accent); background: rgba(43,79,216,.05); }
+.checkout-payment-option input { margin-top: 4px; accent-color: var(--co-accent); }
+.checkout-payment-option span { display: flex; flex-direction: column; gap: 4px; }
+.checkout-payment-option strong { font-size: 13px; }
+.checkout-payment-option small { color: var(--co-muted); font-size: 11px; line-height: 1.5; }
+.checkout-primary, .checkout-secondary {
+  display: inline-flex; justify-content: center; align-items: center; gap: 12px;
+  min-height: 52px; padding: 0 22px; border: 1px solid var(--co-blue); border-radius: 999px;
+  background: var(--co-blue); color: var(--co-yellow); font: 600 12px 'Poppins', sans-serif; letter-spacing: .03em; cursor: pointer;
+}
+.checkout-primary:hover { background: var(--co-accent); border-color: var(--co-accent); }
+.checkout-secondary { background: transparent; color: var(--co-ink); border-color: var(--co-line); }
+.checkout-place-order { width: 100%; }
+.checkout-disclaimer { color: var(--co-muted); font-size: 11px; line-height: 1.6; text-align: center; }
+.checkout-error { padding: 12px 14px; border: 1px solid #d85c5c; background: #fff2f2; color: #8c2020; font-size: 12px; }
+.checkout-summary { position: sticky; top: 20px; }
+.checkout-summary-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-bottom: 20px; border-bottom: 1px solid var(--co-line); }
+.checkout-summary-top > span { color: var(--co-muted); font-size: 10px; font-weight: 600; white-space: nowrap; }
+.checkout-items { padding: 8px 0; }
+.checkout-item { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--co-line); }
+.checkout-item-image { position: relative; width: 72px; height: 82px; background: #e1e9fb; }
+.checkout-item-image img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.checkout-item-image b { position: absolute; top: -7px; right: -7px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--co-blue); color: white; font-size: 10px; }
+.checkout-item-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 3px 0; min-width: 0; }
+.checkout-item-copy strong { font-size: 13px; line-height: 1.4; }
+.checkout-item-copy span { color: var(--co-muted); font-size: 10px; }
+.checkout-item-copy b { margin-top: auto; font-size: 12px; }
+.checkout-coupon { padding: 20px 0; border-bottom: 1px solid var(--co-line); }
+.checkout-coupon-row { display: flex; gap: 8px; margin-top: 10px; }
+.checkout-coupon-row button { padding: 0 15px; border: 1px solid var(--co-ink); background: transparent; color: var(--co-ink); font: 600 10px 'Poppins', sans-serif; cursor: pointer; }
+.checkout-coupon-row button:hover { background: var(--co-ink); color: white; }
+.checkout-coupon-message { margin: 9px 0 0; color: #a13535; font-size: 11px; line-height: 1.5; }
+.checkout-coupon-message.success { color: #236c45; }
+.checkout-coupon-hints { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.checkout-coupon-hints button { padding: 5px 8px; border: 1px dashed var(--co-line); background: transparent; color: var(--co-muted); font-size: 9px; cursor: pointer; }
+.checkout-totals { display: grid; gap: 13px; padding-top: 20px; }
+.checkout-totals > div { display: flex; justify-content: space-between; gap: 14px; color: var(--co-muted); font-size: 12px; }
+.checkout-totals strong { color: var(--co-ink); font-size: 12px; }
+.checkout-totals small { font-size: 10px; }
+.checkout-totals .checkout-discount { color: #236c45; }
+.checkout-totals .checkout-grand-total { align-items: center; margin-top: 4px; padding-top: 17px; border-top: 1px solid var(--co-line); color: var(--co-ink); font-size: 15px; font-weight: 700; }
+.checkout-totals .checkout-grand-total strong { font-size: 22px; }
+.checkout-shipping-note { margin: 18px 0 0; padding: 12px; background: #e1e9fb; color: var(--co-ink); font-size: 11px; line-height: 1.6; }
+.checkout-empty { padding: 24px 0; color: var(--co-muted); font-size: 13px; }
+.checkout-footer { display: flex; align-items: center; justify-content: space-between; gap: 18px; max-width: 1200px; margin: 64px auto 0; padding: 22px 0 0; border-top: 1px solid var(--co-line); }
+.checkout-footer > span { font: italic 600 28px 'DM Serif Display', Georgia, serif; color: #000; }
+.checkout-footer p, .checkout-footer button { color: var(--co-muted); font-size: 10px; letter-spacing: .06em; }
+.checkout-footer button { border: 0; background: transparent; cursor: pointer; }
+.checkout-success { max-width: 620px; margin: 90px auto; padding: clamp(24px, 5vw, 52px); border: 1px solid var(--co-line); text-align: center; background: rgba(255,255,255,.42); }
+.checkout-success-mark { display: grid; place-items: center; width: 58px; height: 58px; margin: 0 auto 24px; border-radius: 50%; background: var(--co-blue); color: var(--co-yellow); font-size: 28px; }
+.checkout-success .checkout-kicker { margin-bottom: 12px; }
+.checkout-success .checkout-muted { max-width: 440px; margin: 18px auto 24px; }
+.checkout-order-summary { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 20px 0; margin-bottom: 22px; border-top: 1px solid var(--co-line); border-bottom: 1px solid var(--co-line); text-align: left; font-size: 12px; }
+.checkout-order-summary span { color: var(--co-muted); }
+.checkout-order-summary strong { text-align: right; }
+@media (max-width: 850px) {
+  .checkout-layout { grid-template-columns: minmax(0, 1fr); }
+  .checkout-summary { position: static; grid-row: 1; }
+  .checkout-header { flex-wrap: wrap; padding: 18px 0; }
+  .checkout-progress { order: 3; width: 100%; justify-content: center; }
+}
+@media (max-width: 560px) {
+  .oddly-checkout { padding: 0 15px 24px; }
+  .checkout-header { min-height: 0; gap: 14px; }
+  .checkout-logo { font-size: 34px; }
+  .checkout-secure { font-size: 9px; }
+  .checkout-page-heading { margin: 36px auto 24px; }
+  .checkout-fields { grid-template-columns: minmax(0, 1fr); }
+  .checkout-field-full { grid-column: auto; }
+  .checkout-panel, .checkout-summary { padding: 18px; }
+  .checkout-footer { align-items: flex-start; flex-direction: column; gap: 10px; margin-top: 40px; }
+  .checkout-success { margin: 48px auto; }
+}

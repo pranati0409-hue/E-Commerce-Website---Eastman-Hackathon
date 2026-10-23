@@ -1,12 +1,12 @@
 
 {
-  "name": "backend",
+  "name": "shoppingcart-emn",
   "version": "1.0.0",
-  "description": "Eastman Hackathon E-commerce Backend",
-  "main": "src/server.js",
+  "description": "ShoppingCart-EMN backend",
+  "main": "src/app.js",
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js"
   },
   "keywords": [],
   "author": "",

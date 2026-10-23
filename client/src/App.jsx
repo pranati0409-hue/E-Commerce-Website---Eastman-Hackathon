@@ -1,6 +1,7 @@
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./App.css";
+import Checkout from "./Checkout";
 
 const products = [
   {
@@ -116,6 +117,25 @@ export default function App() {
   const [notice, setNotice] = useState("");
   const [checkout, setCheckout] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(() => {
+    const match = window.location.pathname.match(/^\/product\/(\d+)\/?$/);
+    return match
+      ? products.find((product) => product.id === Number(match[1])) || null
+      : null;
+  });
+
+  useEffect(() => {
+    function handlePopState() {
+      const match = window.location.pathname.match(/^\/product\/(\d+)\/?$/);
+      const product = match
+        ? products.find((item) => item.id === Number(match[1])) || null
+        : null;
+      setSelectedProduct(product);
+    }
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   const visibleProducts = useMemo(() => {
     return products.filter((product) => {
@@ -166,6 +186,198 @@ export default function App() {
     document.getElementById("discover")?.scrollIntoView({
       behavior: "smooth",
     });
+  }
+
+  function openProduct(product) {
+    window.history.pushState({}, "", `/product/${product.id}`);
+    setSelectedProduct(product);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }
+
+  function backToShop() {
+    if (window.location.pathname.startsWith("/product/")) {
+      window.history.pushState({}, "", "/");
+    }
+    setSelectedProduct(null);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }
+
+  if (showCheckout) {
+    return (
+      <Checkout
+        cart={cart}
+        onBackToShop={() => setShowCheckout(false)}
+        onOrderPlaced={(order) => {
+          console.log("Demo order:", order);
+        }}
+      />
+    );
+  }
+
+  if (selectedProduct) {
+    const product = selectedProduct;
+    const relatedProducts = products
+      .filter((item) => item.category === product.category && item.id !== product.id)
+      .slice(0, 3);
+
+    return (
+      <div className="oddly">
+        <div className="announcement">
+          <span>GOOD TASTE. NO RULES.</span>
+          <span>FREE SHIPPING ON ORDERS ABOVE ₹1,999 ↗</span>
+        </div>
+
+        <header className="navbar">
+          <button className="brand" onClick={backToShop} aria-label="Oddly home">
+            oddly<span className="brand-dot">.</span>
+          </button>
+          <nav className="nav-links">
+            <button onClick={backToShop}>Discover</button>
+            <button onClick={backToShop}>Categories</button>
+            <button onClick={backToShop}>Our point of view</button>
+          </nav>
+          <div className="nav-actions">
+            <button
+              className="bag-button"
+              onClick={() => {
+                window.history.pushState({}, "", "/");
+                setSelectedProduct(null);
+                window.setTimeout(() => {
+                  document.getElementById("mini-cart")?.showModal();
+                }, 0);
+              }}
+            >
+              BAG <span>{cartCount}</span>
+            </button>
+          </div>
+        </header>
+
+        <main className="details-page">
+          <div className="details-breadcrumb">
+            <button onClick={backToShop}>Home</button>
+            <span>/</span>
+            <span>{product.category}</span>
+            <span>/</span>
+            <span>{product.name}</span>
+          </div>
+
+          <section className="details-layout">
+            <div className={`details-image product-${product.color}`}>
+              <img src={product.image} alt={product.name} />
+              <span className="product-tag">{product.tag}</span>
+            </div>
+
+            <div className="details-info">
+              <span className="eyebrow">{product.category.toUpperCase()} / THE OBJECT EDIT</span>
+              <h1>{product.name}</h1>
+              <div className="details-price">
+                <strong>{money(product.price)}</strong>
+                {product.oldPrice && (
+                  <>
+                    <del>{money(product.oldPrice)}</del>
+                    <span>
+                      {Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}% OFF
+                    </span>
+                  </>
+                )}
+              </div>
+
+              <p className="details-description">
+                Meet your new everyday favourite. Thoughtfully picked for its style,
+                personality and everyday usefulness. A good object should do more
+                than just look good.
+              </p>
+
+              <div className="details-benefits">
+                <p>✳ Curated by ODDLY</p>
+                <p>↗ Secure checkout experience</p>
+                <p>◇ Free shipping above ₹1,999</p>
+              </div>
+
+              <button className="primary-button details-add" onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(product);
+                      }}>
+                ADD TO BAG — {money(product.price)} ↗
+              </button>
+              <button className="details-wishlist" onClick={(e) => {
+                        e.stopPropagation();
+                        toggleWishlist(product.id);
+                      }}>
+                {wishlist.includes(product.id) ? "♥ SAVED TO WISHLIST" : "♡ ADD TO WISHLIST"}
+              </button>
+
+              <div className="details-note">
+                <span>01</span>
+                <div>
+                  <strong>THE DETAILS</strong>
+                  <p>
+                    Category: {product.category}<br />
+                    Collection: The Everyday Edit<br />
+                    Product code: ODD-{String(product.id).padStart(3, "0")}
+                  </p>
+                </div>
+              </div>
+              <div className="details-note">
+                <span>02</span>
+                <div>
+                  <strong>DELIVERY &amp; SHIPPING</strong>
+                  <p>
+                    Shipping is free on orders above ₹1,999. Delivery estimates can
+                    be added when checkout is connected.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {relatedProducts.length > 0 && (
+            <section className="related-products">
+              <div className="eyebrow">YOU MIGHT LIKE THESE TOO</div>
+              <h2>More to <span>love.</span></h2>
+              <div className="product-grid">
+                {relatedProducts.map((item) => (
+                  <article
+                    className="product-card"
+                    key={item.id}
+                    onClick={() => openProduct(item)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <div className={`product-image-box product-${item.color}`}>
+                      <img src={item.image} alt={item.name} loading="lazy" />
+                      <span className="product-tag">{item.tag}</span>
+                    </div>
+                    <div className="product-info">
+                      <div>
+                        <span className="product-category">{item.category.toUpperCase()}</span>
+                        <h3>{item.name}</h3>
+                      </div>
+                      <div className="product-price">
+                        <strong>{money(item.price)}</strong>
+                        {item.oldPrice && <del>{money(item.oldPrice)}</del>}
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <div className="details-back-bottom">
+            <button className="primary-button" onClick={backToShop}>← CONTINUE EXPLORING</button>
+          </div>
+        </main>
+
+        <footer className="footer">
+          <button className="brand footer-brand" onClick={backToShop}>
+            oddly<span className="brand-dot">.</span>
+          </button>
+          <span>GOOD TASTE IS A PERSONAL THING.</span>
+          <span>MADE FOR THE UNORDINARY © 2026</span>
+        </footer>
+        {notice && <div className="toast">{notice}</div>}
+      </div>
+    );
   }
 
   return (
@@ -570,7 +782,12 @@ export default function App() {
           {visibleProducts.length ? (
             <div className="product-grid">
               {visibleProducts.map((product, index) => (
-                <article className="product-card" key={product.id}>
+                <article
+                  className="product-card"
+                  key={product.id}
+                  onClick={() => openProduct(product)}
+                  style={{ cursor: "pointer" }}
+                >
                   <div
                     className={`product-image-box product-${product.color}`}
                   >
@@ -585,7 +802,10 @@ export default function App() {
                           ? "Remove from wishlist"
                           : "Add to wishlist"
                       }
-                      onClick={() => toggleWishlist(product.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleWishlist(product.id);
+                      }}
                     >
                       {wishlist.includes(product.id) ? "♥" : "♡"}
                     </button>
@@ -594,7 +814,10 @@ export default function App() {
                     </span>
                     <button
                       className="quick-add"
-                      onClick={() => addToCart(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(product);
+                      }}
                     >
                       ADD TO BAG <span>+</span>
                     </button>

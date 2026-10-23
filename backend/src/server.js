@@ -4,17 +4,23 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 
+const productRoutes = require("./routes/productRoutes");
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+// Health check
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,
     message: "Eastman E-commerce API is running!",
   });
 });
+
+// Product catalog routes
+app.use("/api/products", productRoutes);
 
 const PORT = process.env.PORT || 5000;
 
