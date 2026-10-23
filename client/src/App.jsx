@@ -1,7 +1,7 @@
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./App.css";
-import Checkout from "./Checkout";
+import AuthPortal from "./AuthPortal.jsx";
 
 const products = [
   {
@@ -110,6 +110,8 @@ const money = (n) =>
   }).format(n);
 
 export default function App() {
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  const [authUser, setAuthUser] = useState(null);
   const [category, setCategory] = useState("All objects");
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState([]);
@@ -136,6 +138,29 @@ export default function App() {
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
+
+  useEffect(() => {
+    function handlePopState() {
+      setCurrentPath(window.location.pathname);
+    }
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const navigate = useCallback((path, options = {}) => {
+    window.history.pushState({}, "", path);
+    setCurrentPath(path);
+    if (options.user !== undefined) setAuthUser(options.user);
+    if (!options.preserveScroll) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
+
+  function handleSignOut() {
+    setAuthUser(null);
+    navigate("/login");
+  }
 
   const visibleProducts = useMemo(() => {
     return products.filter((product) => {
@@ -202,14 +227,14 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "instant" });
   }
 
-  if (showCheckout) {
+  if (["/login", "/signup", "/account"].includes(currentPath)) {
     return (
-      <Checkout
-        cart={cart}
-        onBackToShop={() => setShowCheckout(false)}
-        onOrderPlaced={(order) => {
-          console.log("Demo order:", order);
-        }}
+      <AuthPortal
+        key={currentPath}
+        path={currentPath}
+        navigate={navigate}
+        authUser={authUser}
+        onAuthenticated={setAuthUser}
       />
     );
   }
@@ -423,9 +448,19 @@ export default function App() {
             <kbd>/</kbd>
           </label>
 
-          <button className="icon-button account-button" aria-label="Account" onClick={() => setNotice("Login and signup coming soon")}>
+          <button
+            className="icon-button account-button"
+            aria-label="Account"
+            onClick={() => navigate(authUser ? "/account" : "/login")}
+          >
             ♙
           </button>
+
+          {authUser && (
+            <button className="signout-button" onClick={handleSignOut}>
+              SIGN OUT <span>↗</span>
+            </button>
+          )}
 
           <button
             className="bag-button"

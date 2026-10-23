@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 node_modules/
+logs/
+*.log
 .env
-=======
-@"
-**/node_modules/
-**/.env
-"@ | Set-Content .gitignore
->>>>>>> 3099bae (Set up backend project)
+.env.*
+!.env.example
